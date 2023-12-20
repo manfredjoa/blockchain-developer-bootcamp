@@ -50,7 +50,6 @@
     "@nomiclabs/hardhat-ethers": "2.2.3",
     "chai": "4.3.6",
     "ethers": "5.5.4",
-    "hardhat": "2.15.0",
-    "tailwindcss": "^3.4.0"
+    "hardhat": "2.15.0"
   }
 }
