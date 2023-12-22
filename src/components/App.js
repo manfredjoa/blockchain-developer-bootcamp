@@ -8,6 +8,7 @@ import {
   loadTokens,
   loadExchange,
 } from "../store/interactions";
+import Navbar from "./Navbar";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -16,22 +17,44 @@ const App = () => {
     // Connect Ethers to blockchain
     const provider = loadProvider(dispatch);
 
-    // Fetch current network's chainId (e.g. hardhat: 31337, kovan: 42)
+    // Fetch current network's chainId (e.g. Hardhat: 31337, Sepolia: 11155111)
     const chainId = await loadNetwork(provider, dispatch);
 
-    // Fetch current account & balance from MetaMask
-    await loadAccount(provider, dispatch);
+    // Reload page when network changes
+    window.ethereum.on("chainChanged", () => {
+      window.location.reload();
+    });
+
+    // Fetch current account & balance from MetaMask when changed
+    window.ethereum.on("accountsChanged", () => {
+      loadAccount(provider, dispatch);
+    });
 
     // Load Token Smart Contracts
-    const dApp = config[chainId].dApp;
-    const mETH = config[chainId].mETH;
+    const dAppConfig = config[chainId].dApp;
+    const mETHConfig = config[chainId].mETH;
 
-    await loadTokens(provider, [dApp.address, mETH.address], dispatch);
+    // await loadTokens(provider, [dApp.address, mETH.address], dispatch);
+    if (dAppConfig && mETHConfig) {
+      const dApp = dAppConfig.address;
+      const mETH = mETHConfig.address;
+
+      await loadTokens(provider, [dApp, mETH], dispatch);
+    } else {
+      console.error(
+        "dApp or mETH not defined in the config for the current chainId."
+      );
+    }
 
     // Load Exchange Smart Contract
     const exchangeConfig = config[chainId].exchange;
 
-    await loadExchange(provider, exchangeConfig.address, dispatch);
+    if (exchangeConfig) {
+      await loadExchange(provider, exchangeConfig.address, dispatch);
+    } else
+      console.error(
+        "exchangeConfig not defined in the config for the current chainId."
+      );
   };
 
   useEffect(() => {
@@ -40,6 +63,7 @@ const App = () => {
 
   return (
     <div>
+      <Navbar />
       {/* Navbar */}
 
       <main className="exchange grid">
