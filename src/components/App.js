@@ -7,9 +7,11 @@ import {
   loadAccount,
   loadTokens,
   loadExchange,
+  subscribeToEvents,
 } from "../store/interactions";
 import Navbar from "./Navbar";
 import Markets from "./Markets";
+import Balance from "./Balance";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -49,13 +51,17 @@ const App = () => {
 
     // Load Exchange Smart Contract
     const exchangeConfig = config[chainId].exchange;
+    let exchange;
 
     if (exchangeConfig) {
-      await loadExchange(provider, exchangeConfig.address, dispatch);
+      exchange = await loadExchange(provider, exchangeConfig.address, dispatch);
     } else
       console.error(
         "exchangeConfig not defined in the config for the current chainId."
       );
+
+    // Listen to events
+    subscribeToEvents(exchange, dispatch);
   };
 
   useEffect(() => {
@@ -70,7 +76,7 @@ const App = () => {
         <section className="exchange__section--left grid">
           <Markets />
 
-          {/* Balance */}
+          <Balance />
 
           {/* Order */}
         </section>
