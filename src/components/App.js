@@ -8,11 +8,13 @@ import {
   loadTokens,
   loadExchange,
   subscribeToEvents,
+  loadAllOrders,
 } from "../store/interactions";
 import Navbar from "./Navbar";
 import Markets from "./Markets";
 import Balance from "./Balance";
 import Order from "./Order";
+import OrderBook from "./OrderBook";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -61,6 +63,9 @@ const App = () => {
         "exchangeConfig not defined in the config for the current chainId."
       );
 
+    // Fetch all orders: open, filled, cancelled
+    loadAllOrders(provider, exchange, dispatch);
+
     // Listen to events
     subscribeToEvents(exchange, dispatch);
   };
@@ -88,7 +93,7 @@ const App = () => {
 
           {/* Trades */}
 
-          {/* OrderBook */}
+          <OrderBook />
         </section>
       </main>
 
