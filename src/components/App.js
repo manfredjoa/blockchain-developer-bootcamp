@@ -18,6 +18,7 @@ import PriceChart from "./PriceChart";
 import Transactions from "./Transactions";
 import Trades from "./Trades";
 import OrderBook from "./OrderBook";
+import Alert from "./Alert";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -75,7 +76,7 @@ const App = () => {
 
   useEffect(() => {
     loadBlockchainData();
-  }, []);
+  });
 
   return (
     <div>
@@ -89,6 +90,7 @@ const App = () => {
 
           <Order />
         </section>
+
         <section className="exchange__section--right grid">
           <PriceChart />
 
@@ -100,7 +102,7 @@ const App = () => {
         </section>
       </main>
 
-      {/* Alert */}
+      <Alert />
     </div>
   );
 };
